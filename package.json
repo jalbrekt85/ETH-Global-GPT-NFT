@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "mono",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "next": "yarn workspace @mono/next",
+    "dev": "yarn next dev",
+    "lint": "yarn next lint"
+  }
+}
