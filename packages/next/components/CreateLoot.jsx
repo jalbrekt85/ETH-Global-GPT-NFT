@@ -1,0 +1,224 @@
+import {
+  Text,
+  Spinner,
+  Button,
+  Textarea,
+  SkeletonText,
+  useToast,
+  Stack,
+  Box,
+  Flex,
+  SimpleGrid,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { ethers } from "ethers";
+import { useUser } from "../context/UserContext";
+import OpenAI from "../abis/contracts/Consumer.json";
+import Loot from "../abis/contracts/Loot.json";
+import { Container } from "./Container";
+import ItemTable from "./ItemTable";
+import DeployDrawer from "./DeployDrawer";
+import ExampleNFT from "./ExampleNFT";
+import random from "../utils/random";
+import colors from "../utils/colors";
+
+const CreateLoot = ({
+  items,
+  setItems,
+  deployedContract,
+  setDeployedContract,
+  setDeployedColor,
+  itemHistory,
+  setItemHistory
+}) => {
+  const contractAddress = "0xc0055849ae9997D37D7F8b80d08828f69a1bf527";
+
+  const user = useUser();
+  const [userPrompt, setUserPrompt] = useState("");
+  const [resize] = useState("vertical");
+  const [isLoading, setIsLoading] = useState(false);
+  const [colorsList, setColorsList] = useState([
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "teal",
+    "blue",
+    "cyan",
+    "purple",
+    "pink",
+  ]);
+
+  const toast = useToast();
+
+  async function getResult() {
+    const contract = new ethers.Contract(
+      contractAddress,
+      OpenAI.abi,
+      user.provider.getSigner()
+    );
+    const reqItems = await contract.userToItems(user.address);
+    const weapons = await reqItems.weapons;
+    const armor = await reqItems.armor;
+    const accessories = await reqItems.accessories;
+    // setResult(res)
+
+    const weaponsList = weapons.split(",");
+    const armorList = armor.split(",");
+    const accessoriesList = accessories.split(",");
+    let newItems = {
+      theme: userPrompt,
+      weapons: weaponsList,
+      armor: armorList,
+      accessories: accessoriesList,
+      colorTheme: random(colorsList),
+    };
+    if (colorsList.length > 1) {
+      colorsList.pop();
+      setColorsList(colorsList);
+    } else {
+      setColorsList(colors);
+    }
+    setItems(newItems);
+    setItemHistory([...itemHistory, newItems]);
+
+    setUserPrompt("");
+    setIsLoading(false);
+  }
+
+  async function requestPrompt() {
+    if (!userPrompt) {
+      toast({
+        title: "Empty Prompt",
+        description: "Enter a prompt",
+        status: "error",
+        duration: 7000,
+        isClosable: true,
+      });
+      return;
+    }
+    const contract = new ethers.Contract(
+      contractAddress,
+      OpenAI.abi,
+      user.provider.getSigner()
+    );
+    // const fee = await contract.fee();
+    // console.log(ethers.utils.formatUnits(fee).toString());
+
+    contract.on("Response", (Id) => {
+      if (Id === requestId) {
+        getResult();
+      }
+    });
+
+    const tx = await contract.requestBytes(userPrompt);
+    await tx.wait();
+
+    const requestId = await contract.userToId(user.address);
+
+    toast({
+      title: "Request GPT-3",
+      description: "Your Transaction is pending",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+    setIsLoading(true);
+  }
+
+  function ShowButton() {
+    return (
+      <Button
+        mt={4}
+        isLoading={isLoading}
+        onClick={requestPrompt}
+        borderRadius="md"
+        bgGradient={[
+          "linear(to-tr, teal.400, yellow.500)",
+          "linear(to-t, blue.300, teal.600)",
+          "linear(to-b, orange.200, purple.400)",
+        ]}
+        color="white"
+        px={4}
+        h={8}
+      >
+        Submit
+      </Button>
+    );
+  }
+
+  return (
+    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={20}>
+      <Stack>
+        <ExampleNFT ItemSet={items} />
+      </Stack>
+      <Stack>
+        <Text
+          fontSize="2xl"
+          bgGradient={[
+            "linear(to-tr, teal.400, yellow.500)",
+            "linear(to-t, blue.300, teal.600)",
+            "linear(to-b, orange.200, purple.400)",
+          ]}
+          bgClip="text"
+          fontWeight="bold"
+        >
+          Enter Loot Theme:
+        </Text>
+        <Textarea
+          maxW="sm"
+          borderWidth="3px"
+          borderRadius="lg"
+          overflow="hidden"
+          p="3"
+          fontWeight="semibold"
+          variant="outline"
+          onChange={(e) => setUserPrompt(e.target.value)}
+          value={userPrompt}
+          resize={resize}
+          mt={4}
+        />
+
+        <ShowButton />
+
+        <SkeletonText
+          isLoaded={!isLoading}
+          noOfLines={4}
+          spacing="4"
+          startColor="pink.500"
+          endColor="orange.500"
+          height="50px"
+          width="400px"
+          padding="3"
+          mt={3}
+        >
+          <ItemTable ItemSet={items} />
+        </SkeletonText>
+      </Stack>
+      <Stack>
+        <Text
+          fontSize="lg"
+          bgGradient={[
+            "linear(to-tr, teal.400, yellow.500)",
+            "linear(to-t, blue.300, teal.600)",
+            "linear(to-b, orange.200, purple.400)",
+          ]}
+          bgClip="text"
+          margin="10px"
+          noOfLines={[4, 5, 6]}
+        >
+          Select Your Loot Set, Configure your Contract and Deploy! You'll be
+          able to view your deployed contract and NFTs from here and OpenSea
+        </Text>
+        <DeployDrawer
+          itemHistory={itemHistory}
+          deployedContract={deployedContract}
+          setDeployedContract={setDeployedContract}
+          setDeployedColor={setDeployedColor}
+        />
+      </Stack>
+    </SimpleGrid>
+  );
+};
+
+export default CreateLoot;

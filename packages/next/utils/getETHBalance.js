@@ -7,8 +7,8 @@ import { BigNumber, ethers } from "ethers";
  * @returns
  */
 const getETHBalance = async (
-  provider: ethers.providers.Web3Provider
-): Promise<BigNumber> => {
+  provider
+) => {
   const signer = provider.getSigner();
   const address = await signer.getAddress();
   const balance = await provider.getBalance(address);

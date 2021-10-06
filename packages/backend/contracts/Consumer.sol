@@ -2,69 +2,85 @@
 pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "../interfaces/IERC20.sol";
 
-/**
- * @notice DO NOT USE THIS CODE IN PRODUCTION. This is an example contract. 
- */
 contract Consumer is ChainlinkClient {
   using Chainlink for Chainlink.Request;
 
-  // variable bytes returned in a signle oracle response
-  bytes public data;
-  string public response;
-  uint public fee = 100000000000;
+  string public weapons;
+  string public attire;
+  string public accessories;
+  uint public fee = 1000;
+  mapping  (bytes32 => address) public idToUser;
+  mapping (address => bytes32) public userToId;
+  mapping  (bytes32 => ItemSet) public idToItemSet;
+  mapping (address => ItemSet) public userToItems;
+  uint256 payment = 100000000000000;
+  bytes32 specId = "b61b4d719ab04199882c6a8ac3c51861";
 
-  /**
-   * @notice Initialize the link token and target oracle
-   * @dev The oracle address must be an Operator contract for multiword response
-   *
-   *
-   * Kovan Testnet details: 
-   * Link Token: 0xa36085F69e2889c224210F603D836748e7dC0088
-   * Oracle: 
-   */
+  struct ItemSet {
+    string theme;
+    string weapons;
+    string armor;
+    string accessories;
+  }
+
   constructor(
   ) {
     setChainlinkToken(0xa36085F69e2889c224210F603D836748e7dC0088);
-    setChainlinkOracle();
-  }
-
-  /**
-   * @notice Request variable bytes from the oracle
-   */
-  function requestBytes(string memory _prompt
-  )
-    public payable
-  {
-    require(msg.value >= fee);
-    bytes32 specId = "Your Job Spec ID";
-    uint256 payment = 10000000000000000000;
-    Chainlink.Request memory req = buildChainlinkRequest(specId, address(this), this.fulfillBytes.selector);
-    req.add("prompt", _prompt);
-    requestOracleData(req, payment);
+    setChainlinkOracle(0x45Fd8dF7E9348b14AfC145599F719DbE27977Fd9);
     
   }
 
-  event RequestFulfilled(
-    bytes32 indexed requestId,
-    bytes indexed data
-  );
+  function requestBytes(string memory _prompt
+  )
+    public
+    returns (bytes32)
+  {
+    // require(msg.value >= fee, "Include fee in transaction");
+    // require(IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).balanceOf(address(this)) >= payment, "Not enough link");
+    Chainlink.Request memory req = buildChainlinkRequest(specId, address(this), this.fulfill.selector);
+    req.add("prompt", _prompt);
 
-  /**
-   * @notice Fulfillment function for variable bytes
-   * @dev This is called by the oracle. recordChainlinkFulfillment must be used.
-   */
-  function fulfillBytes(
+    // bytes32 reqId = sendChainlinkRequestTo(0x45Fd8dF7E9348b14AfC145599F719DbE27977Fd9, req, payment);
+    // idToUser[reqId] = msg.sender;
+    bytes32 id = requestOracleData(req, payment);
+    idToUser[id] = msg.sender;
+    userToId[msg.sender] = id;
+ 
+  }
+
+
+
+  event Response(bytes32 Id);
+
+  
+  function fulfill(
     bytes32 requestId,
-    bytes memory bytesData
+    bytes memory _weapons,
+    bytes memory _attire,
+    bytes memory _accessories
   )
     public
     recordChainlinkFulfillment(requestId)
   {
-    emit RequestFulfilled(requestId, bytesData);
-    data = bytesData;
-    response = string(data);
+    emit Response(requestId);
+    ItemSet memory items;
+    items.theme = "";
+    items.weapons = string(_weapons);
+    items.armor = string(_attire);
+    items.accessories = string(_accessories);
+    address requester = idToUser[requestId];
+    userToItems[requester] = items;
+
   }
+ 
+  
+  function withdrawLink() public {
+    uint256 bal = IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).balanceOf(address(this));
+    IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).transfer(msg.sender, bal);
+  }
+  
   receive() external payable {}
 
 }

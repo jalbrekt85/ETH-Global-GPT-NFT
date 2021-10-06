@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { User } from "../context/UserContext";
 import getNetwork from "../utils/getNetwork";
 
-const useNetwork = (user: User): [String, () => Promise<void>] => {
-  const [network, setNetwork] = useState<String>("Not connected");
+const useNetwork = (user) => {
+  const [network, setNetwork] = useState("Not connected");
 
-  const fetchNetwork= useCallback(async () => {
+  const fetchNetwork = useCallback(async () => {
     if (!user) {
       setNetwork("Not connected");
       return;
@@ -14,7 +14,7 @@ const useNetwork = (user: User): [String, () => Promise<void>] => {
       const network = await getNetwork(user.provider);
       setNetwork(network);
     } catch (err) {
-        console.log(err)
+      console.log(err);
       setNetwork("Not connected");
     }
   }, [user]);

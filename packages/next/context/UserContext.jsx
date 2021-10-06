@@ -4,24 +4,15 @@ import { useWeb3React } from "@web3-react/core";
 import useEagerConnect from "../hooks/useEagerConnect";
 import { injected } from "../utils/connectors";
 
-export interface User {
-  address: string;
-  provider: ethers.providers.Web3Provider;
-}
-
-type UserContextData = {
-  user: User | null;
-  login: () => Promise<void>;
-};
-
-const UserContext = createContext<UserContextData>({
+const UserContext = createContext({
   user: null,
   login: () => null,
 });
+
 export default UserContext;
 
 export const UserContextProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState(null);
 
   useEagerConnect(); // Adds users on first load
   const { activate, active, library, account } = useWeb3React();
@@ -32,7 +23,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
   /**
    * Given the Provider, return address and provider
    */
-  const getAddressAndProvider = async (provider: providers.Web3Provider) => {
+  const getAddressAndProvider = async (provider) => {
     const signer = provider.getSigner();
     const address = await signer.getAddress();
 
@@ -57,7 +48,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
   /**
    * Login with Metamask
    */
-  const login = async (): Promise<void> => {
+  const login = async () => {
     try {
       activateMetamask();
     } catch (err) {
@@ -78,13 +69,13 @@ export const UserContextProvider: React.FC = ({ children }) => {
   );
 };
 
-export const useLogin = (): ((useWalletConnect?: boolean) => void) => {
+export const useLogin = () => {
   const { login } = useContext(UserContext);
 
   return login;
 };
 
-export const useUser = (): User => {
+export const useUser = () => {
   const { user } = useContext(UserContext);
 
   return user;

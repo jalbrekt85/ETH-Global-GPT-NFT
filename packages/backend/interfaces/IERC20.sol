@@ -1,4 +1,4 @@
-pragma solidity ^0.6.6;
+pragma solidity ^0.8.7;
 
 interface IERC20 {
   function allowance(address owner, address spender) external view returns (uint256 remaining);
