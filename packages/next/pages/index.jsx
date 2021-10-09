@@ -2,17 +2,18 @@ import CreateLoot from "../components/CreateLoot";
 import MarketPlace from "../components/MarketPlace";
 import MyCollection from "../components/MyCollection";
 import { useState } from "react";
-import { Text } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import Header from "../components/Header";
 import { ethers } from "ethers";
-import { useUser } from "../context/UserContext";
+import { useUser, useLogin } from "../context/UserContext";
 import useETHBalance from "../hooks/useETHBalance";
 import useNetwork from "../hooks/useNetwork";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Box, Text, Heading } from "@chakra-ui/react";
+
 
 const NewHome = () => {
   const user = useUser();
+  const login = useLogin();
   const [userBalance] = useETHBalance(user);
   const [network] = useNetwork(user);
   const [deployedContract, setDeployedContract] = useState();
@@ -27,7 +28,15 @@ const NewHome = () => {
     colorTheme: "",
   });
 
-  return (
+  return(
+  !user ? (
+    <Text
+          fontSize={"4xl"}
+          fontWeight={"bold"}>
+            Switch to the Polygon Network
+          </Text>
+  ) : (
+
     <div>
       <Header
         account={
@@ -111,7 +120,12 @@ const NewHome = () => {
         </Tabs>
       </Container>
     </div>
-  );
+  )
+  )
+
+  
+
+
 };
 
 export default NewHome;

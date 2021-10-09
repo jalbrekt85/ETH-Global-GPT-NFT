@@ -1,4 +1,3 @@
-import type { AppProps } from "next/app";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Provider, Web3Provider } from "@ethersproject/providers";
 import "../styles/globals.scss";
@@ -7,7 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../theme";
 
 const getLibrary = (provider) => {
-  return new Web3Provider(provider as any);
+  return new Web3Provider(provider);
 };
 
 const MyApp = ({ Component, pageProps }) => {

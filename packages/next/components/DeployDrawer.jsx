@@ -172,7 +172,7 @@ const DeployDrawer = ({
                   onChange={(val) => setSelectedTheme(val)}
                   value={selectedTheme}
                 >
-                  <Stack>
+                  <Stack >
                     {itemHistory.map((item) => (
                       <Radio value={item.theme}>
                         <Badge

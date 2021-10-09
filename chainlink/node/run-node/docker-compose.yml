@@ -1,0 +1,21 @@
+version: '3'
+services:
+  pg_chainlink:
+    image: "postgres"
+    ports:
+      - "5432"
+    env_file:
+      - database.env
+    volumes:
+      # [PATH_TO_POSTGRES_DATA]:/var/lib/postgressql/data/
+      - 
+  chainlink:
+    image: "smartcontract/chainlink:0.10.10"
+    env_file: .env
+    depends_on:
+      - pg_chainlink
+    ports:
+      - "6688:6688"
+    volumes:
+      # [PATH_TO_REPO_CHAINLINK_VOLUME]:/chainlink/
+    command: node start --password /chainlink/password.txt --api /chainlink/apicredentials.txt 

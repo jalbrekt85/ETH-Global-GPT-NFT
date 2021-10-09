@@ -11,7 +11,7 @@ const UserContext = createContext({
 
 export default UserContext;
 
-export const UserContextProvider: React.FC = ({ children }) => {
+export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEagerConnect(); // Adds users on first load

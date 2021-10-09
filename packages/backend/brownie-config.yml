@@ -2,19 +2,19 @@ eports:
   exclude_contracts:
     - SafeMath
 dependencies:
-  - smartcontractkit/chainlink-brownie-contracts@0.2.1
+  - smartcontractkit/chainlink-brownie-contracts@0.2.2
   - OpenZeppelin/openzeppelin-contracts@3.4.0
 compiler:
   solc:
     remappings:
-      - '@chainlink=smartcontractkit/chainlink-brownie-contracts@0.2.1'
+      - '@chainlink=smartcontractkit/chainlink-brownie-contracts@0.2.2'
       - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@3.4.0'
 
 autofetch_sources: True
 
 
 networks:
-  default: kovan
+  default: polygon-main
   kovan:
     link: '0xa36085F69e2889c224210F603D836748e7dC0088'
 

@@ -1,22 +1,23 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.6;
 
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-import "../interfaces/IERC20.sol";
+import "https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/ChainlinkClient.sol";
+
 
 contract Consumer is ChainlinkClient {
   using Chainlink for Chainlink.Request;
 
-  string public weapons;
-  string public attire;
-  string public accessories;
-  uint public fee = 1000;
+
   mapping  (bytes32 => address) public idToUser;
   mapping (address => bytes32) public userToId;
   mapping  (bytes32 => ItemSet) public idToItemSet;
   mapping (address => ItemSet) public userToItems;
+  uint public fee = 10000000000000000;
+  
   uint256 payment = 100000000000000;
-  bytes32 specId = "b61b4d719ab04199882c6a8ac3c51861";
+  bytes32 specId = "2bfad19ddf6b48dc9f9ecd6f6125ca5f";
+  address oracle = 0x81011dACe2e5512c9cbB0C329316FfD1a4701BaD;
+  address payable owner = payable(0xA0c60A3Bf0934869f03955f3431E044059B03E62);
 
   struct ItemSet {
     string theme;
@@ -27,29 +28,27 @@ contract Consumer is ChainlinkClient {
 
   constructor(
   ) {
-    setChainlinkToken(0xa36085F69e2889c224210F603D836748e7dC0088);
-    setChainlinkOracle(0x45Fd8dF7E9348b14AfC145599F719DbE27977Fd9);
+    setChainlinkToken(0xb0897686c545045aFc77CF20eC7A532E3120E0F1);
+    setChainlinkOracle(0x81011dACe2e5512c9cbB0C329316FfD1a4701BaD);
     
   }
 
   function requestBytes(string memory _prompt
   )
     public
-    returns (bytes32)
+    payable
   {
-    // require(msg.value >= fee, "Include fee in transaction");
-    // require(IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).balanceOf(address(this)) >= payment, "Not enough link");
-    Chainlink.Request memory req = buildChainlinkRequest(specId, address(this), this.fulfill.selector);
+    require(msg.value >= fee, "request fee must be >= 0.01 MATIC");
+    
+    Chainlink.Request memory req = buildOperatorRequest(specId, this.fulfill.selector);
     req.add("prompt", _prompt);
 
-    // bytes32 reqId = sendChainlinkRequestTo(0x45Fd8dF7E9348b14AfC145599F719DbE27977Fd9, req, payment);
-    // idToUser[reqId] = msg.sender;
-    bytes32 id = requestOracleData(req, payment);
+   
+    bytes32 id = sendOperatorRequestTo(oracle, req, payment);
     idToUser[id] = msg.sender;
     userToId[msg.sender] = id;
  
   }
-
 
 
   event Response(bytes32 Id);
@@ -74,13 +73,23 @@ contract Consumer is ChainlinkClient {
     userToItems[requester] = items;
 
   }
- 
   
-  function withdrawLink() public {
-    uint256 bal = IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).balanceOf(address(this));
-    IERC20(0xa36085F69e2889c224210F603D836748e7dC0088).transfer(msg.sender, bal);
+    function withdrawLink() public {
+    require(msg.sender == owner, "not owner");
+    uint256 bal = IERC20(0xb0897686c545045aFc77CF20eC7A532E3120E0F1).balanceOf(address(this));
+    IERC20(0xb0897686c545045aFc77CF20eC7A532E3120E0F1).transfer(owner, bal);
   }
   
+  function withdrawFees() public {
+      require(msg.sender == owner, "not owner");
+      owner.transfer(address(this).balance);
+  }
+ 
   receive() external payable {}
 
+}
+
+interface IERC20 {
+  function balanceOf(address owner) external view returns (uint256 balance);
+  function transfer(address to, uint256 value) external returns (bool success);
 }

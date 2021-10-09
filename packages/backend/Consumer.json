@@ -1,0 +1,211 @@
+{
+    "abi": [{
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "id",
+                "type": "bytes32"
+            }],
+            "name": "ChainlinkCancelled",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "id",
+                "type": "bytes32"
+            }],
+            "name": "ChainlinkFulfilled",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "id",
+                "type": "bytes32"
+            }],
+            "name": "ChainlinkRequested",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "Id",
+                "type": "bytes32"
+            }],
+            "name": "Response",
+            "type": "event"
+        },
+        {
+            "inputs": [],
+            "name": "fee",
+            "outputs": [{
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                    "internalType": "bytes32",
+                    "name": "requestId",
+                    "type": "bytes32"
+                },
+                {
+                    "internalType": "bytes",
+                    "name": "_weapons",
+                    "type": "bytes"
+                },
+                {
+                    "internalType": "bytes",
+                    "name": "_attire",
+                    "type": "bytes"
+                },
+                {
+                    "internalType": "bytes",
+                    "name": "_accessories",
+                    "type": "bytes"
+                }
+            ],
+            "name": "fulfill",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }],
+            "name": "idToItemSet",
+            "outputs": [{
+                    "internalType": "string",
+                    "name": "theme",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "weapons",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "armor",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "accessories",
+                    "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }],
+            "name": "idToUser",
+            "outputs": [{
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                "internalType": "string",
+                "name": "_prompt",
+                "type": "string"
+            }],
+            "name": "requestBytes",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }],
+            "name": "userToId",
+            "outputs": [{
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }],
+            "name": "userToItems",
+            "outputs": [{
+                    "internalType": "string",
+                    "name": "theme",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "weapons",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "armor",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "accessories",
+                    "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "withdrawFees",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "withdrawLink",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "stateMutability": "payable",
+            "type": "receive"
+        }
+    ]
+}

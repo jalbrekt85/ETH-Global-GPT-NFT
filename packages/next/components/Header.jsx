@@ -1,8 +1,6 @@
 import React from "react";
 import {
-  chakra,
   Flex,
-  HStack,
   Icon,
   IconButton,
   Link,
@@ -18,8 +16,10 @@ import { FaSun } from "@react-icons/all-files/fa/FaSun";
 import { FaAddressCard } from "@react-icons/all-files/fa/FaAddressCard";
 import { FaNetworkWired } from "@react-icons/all-files/fa/FaNetworkWired";
 import { FaEthereum } from "@react-icons/all-files/fa/FaEthereum";
+import { useUser } from "../context/UserContext";
 
 export default function App(props) {
+  const user = useUser()
   const { toggleColorMode: toggleMode } = useColorMode();
   const text = useColorModeValue("dark", "light");
   const SwitchIcon = useColorModeValue(FaMoon, FaSun);
@@ -117,6 +117,13 @@ export default function App(props) {
             onClick={toggleMode}
             icon={<SwitchIcon />}
           />
+          {!user && (
+          <Text
+          fontSize={"xl"}
+          fontWeight={"bold"}>
+            Switch to the Polygon Network
+          </Text>
+        )}
           {Web3Component(props.account, FaAddressCard)}
           {Web3Component(props.network, FaNetworkWired)}
           {Web3Component(props.balance, FaEthereum)}

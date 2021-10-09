@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { ethers } from "ethers";
 import { useUser } from "../context/UserContext";
-import OpenAI from "../abis/contracts/Consumer.json";
+import Consumer from "../abis/contracts/Consumer.json";
 import Loot from "../abis/contracts/Loot.json";
 import { Container } from "./Container";
 import ItemTable from "./ItemTable";
@@ -31,7 +31,7 @@ const CreateLoot = ({
   itemHistory,
   setItemHistory
 }) => {
-  const contractAddress = "0xc0055849ae9997D37D7F8b80d08828f69a1bf527";
+  const contractAddress = "0x3a2696b585caE58f1F489FEf93513cb8D8886Cba";
 
   const user = useUser();
   const [userPrompt, setUserPrompt] = useState("");
@@ -54,7 +54,7 @@ const CreateLoot = ({
   async function getResult() {
     const contract = new ethers.Contract(
       contractAddress,
-      OpenAI.abi,
+      Consumer.abi,
       user.provider.getSigner()
     );
     const reqItems = await contract.userToItems(user.address);
@@ -82,7 +82,6 @@ const CreateLoot = ({
     setItems(newItems);
     setItemHistory([...itemHistory, newItems]);
 
-    setUserPrompt("");
     setIsLoading(false);
   }
 
@@ -99,10 +98,10 @@ const CreateLoot = ({
     }
     const contract = new ethers.Contract(
       contractAddress,
-      OpenAI.abi,
+      Consumer.abi,
       user.provider.getSigner()
     );
-    // const fee = await contract.fee();
+    const fee = await contract.fee();
     // console.log(ethers.utils.formatUnits(fee).toString());
 
     contract.on("Response", (Id) => {
@@ -110,8 +109,13 @@ const CreateLoot = ({
         getResult();
       }
     });
+    contract.on("ChainlinkFulfilled", (Id) => {
+      if (Id === requestId) {
+        getResult();
+      }
+    });
 
-    const tx = await contract.requestBytes(userPrompt);
+    const tx = await contract.requestBytes(userPrompt, {value: fee});
     await tx.wait();
 
     const requestId = await contract.userToId(user.address);
@@ -179,7 +183,20 @@ const CreateLoot = ({
           mt={4}
         />
 
-        <ShowButton />
+        <Button
+        mt={4}
+        isLoading={isLoading}
+        onClick={requestPrompt}
+        borderRadius="md"
+        bgGradient={[
+          "linear(to-tr, teal.400, yellow.500)",
+          "linear(to-t, blue.300, teal.600)",
+          "linear(to-b, orange.200, purple.400)",
+        ]}
+        color="white"
+      >
+        Submit
+      </Button>
 
         <SkeletonText
           isLoaded={!isLoading}

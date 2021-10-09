@@ -3,31 +3,34 @@ import {
   SimpleGrid,
   Box,
   useToast,
-  Flex,
+  Badge,
   Text,
   Button,
   Center,
-  Image,
+  Heading,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
   FormControl,
-  FormLabel
+  HStack,
+  Container,
+  IconButton,
+  Stack
 } from "@chakra-ui/react";
 import { useUser } from "../context/UserContext";
 import useETHBalance from "../hooks/useETHBalance";
 import Loot from "../abis/contracts/Loot.json";
 import { ethers } from "ethers";
 import CollectionItem from "./CollectionItem"
-import { BiRefresh } from "@react-icons/all-files/bi/BiRefresh";
+import { HiRefresh } from "@react-icons/all-files/hi/HiRefresh";
 
 const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployedColor }) => {
   const [tokensOwned, setTokensOwned] = useState(0);
   const [count, setCount] = useState(1)
   const [tokens, setTokens] = useState([])
-  const [theme, setTheme] = useState()
+  const [theme, setTheme] = useState("")
   const user = useUser();
   const [userBalance] = useETHBalance(user);
   const toast = useToast()
@@ -40,19 +43,17 @@ const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployed
   async function getTokens() {
     let currentTokens = []
     for (let i = 0; i < parseInt(tokensOwned, 10); i++) {
-      // try {
       const tokenID = await deployedContract.tokenOfOwnerByIndex(user.address, i)
       
       const tokenImage = await deployedContract.tokenImage(tokenID)
       
       currentTokens.push({image: tokenImage, id: tokenID.toString()})
-      // }
-      // catch(e) {console.log(e)}
     }
     setTokens(currentTokens)
   }
 
   async function getBal() {
+    console.log(deployedContract.address)
     const tokenBal = await deployedContract.balanceOf(user.address);
     setTokensOwned(tokenBal.toString());
   }
@@ -96,9 +97,10 @@ const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployed
  
   if (deployedContract) {
     return (
-      <Box >
+      <Container maxW={'7xl'}>
+        <HStack>
         <Text
-          fontSize="2xl"
+          fontSize="lg"
           bgGradient={[
             "linear(to-tr, teal.400, yellow.500)",
             "linear(to-t, blue.300, teal.600)",
@@ -107,10 +109,32 @@ const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployed
           bgClip="text"
           fontWeight="bold"
         >
-          Contract: {deployedContract.address + "\n"}
-          Balance {
-          tokensOwned}
+          Contract: {deployedContract.address}
         </Text>
+        <Badge
+              borderRadius="full"
+              px="5"
+              colorScheme={deployedColor}
+              alignItems="center"
+            >
+              {theme}
+            </Badge>
+            <Center height="30px" />
+            </HStack>
+        <Text
+          fontSize="lg"
+          bgGradient={[
+            "linear(to-tr, teal.400, yellow.500)",
+            "linear(to-t, blue.300, teal.600)",
+            "linear(to-b, orange.200, purple.400)",
+          ]}
+          bgClip="text"
+          fontWeight="bold"
+        >
+         
+          Loot Owned: {tokensOwned}
+        </Text>
+        
         <Text
           fontSize="xl"
           bgGradient={[
@@ -123,13 +147,16 @@ const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployed
         >
           Token ID
         </Text>
+        
         <NumberInput size="md" maxW={24} defaultValue={1} min={1} max={10000} onChange={(val) => setCount(val)}>
     <NumberInputField />
     <NumberInputStepper>
       <NumberIncrementStepper />
       <NumberDecrementStepper />
     </NumberInputStepper>
+    
   </NumberInput>
+  
         <Button
           mt={4}
           onClick={claimLoot}
@@ -145,18 +172,38 @@ const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployed
         >
           Claim
         </Button>
-        <Button colorScheme="facebook" leftIcon={<BiRefresh />} onClick={getTokens}/>
-        <Center height="50px" />
+        
+        <Center height="40px" />
+        <Heading
+          bgGradient={[
+            "linear(to-tr, teal.400, yellow.500)",
+            "linear(to-t, blue.300, teal.600)",
+            "linear(to-b, orange.200, purple.400)",
+          ]}
+          bgClip="text"
+          fontWeight="bold">My Loot:</Heading>
+           <IconButton icon={<HiRefresh />} onClick={getTokens}/>
         <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }} alignContent="center">
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 5, lg: 8 }}>
-
         <CollectionList/>
         </SimpleGrid>
         </Box>
-      </Box>
+      </Container>
     );
   }
-  return <div></div>;
+  return <div>
+    <Text
+          fontSize="lg"
+          bgGradient={[
+            "linear(to-tr, teal.400, yellow.500)",
+            "linear(to-t, blue.300, teal.600)",
+            "linear(to-b, orange.200, purple.400)",
+          ]}
+          bgClip="text"
+          margin="10px"
+          noOfLines={[4, 5, 6]}
+        >Deploy/Load a Loot Contract and then come back</Text>
+  </div>;
 };
 
 export default MyCollection;
