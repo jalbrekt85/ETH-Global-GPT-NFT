@@ -10,7 +10,7 @@ const CollectionItem = ({ theme, color, image, tokenId }) => {
         overflow="hidden"
         alignContent="center"
       >
-        <Image src={`data:image/svg+xml;utf8,${image}`} />
+        <Image src={`data:image/svg+xml;base64,${image}`} />
         <Box p="8">
           <Box alignItems="center">
             <Badge

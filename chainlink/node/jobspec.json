@@ -1,0 +1,58 @@
+{
+    "name": "",
+    "initiators": [{
+        "id": 1,
+        "jobSpecId": "2bfad19d-df6b-48dc-9f9e-cd6f6125ca5f",
+        "type": "runlog",
+        "params": {
+            "address": "0x81011dace2e5512c9cbb0c329316ffd1a4701bad"
+        }
+    }],
+    "tasks": [{
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "openai",
+            "params": {
+                "itemType": "Weapons"
+            }
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "resultcollect"
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "openai",
+            "params": {
+                "itemType": "Attire"
+            }
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "resultcollect"
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "openai",
+            "params": {
+                "itemType": "Accessories"
+            }
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "resultcollect"
+        },
+        {
+            "jobSpecId": "2bfad19ddf6b48dc9f9ecd6f6125ca5f",
+            "type": "ethtx",
+            "confirmations": 1,
+            "params": {
+                "abiEncoding": [
+                    "bytes32",
+                    "bytes",
+                    "bytes",
+                    "bytes"
+                ]
+            }
+        }
+    ]
+}

@@ -9,17 +9,8 @@ import {ERC721} from "./NFT.sol";
 
 contract Master is ERC721Enumerable, ReentrancyGuard, Ownable {
     
-    constructor() ERC721("Loot", "LOOT") Ownable() {}
-
-    struct ItemSet {
-    string theme;
-    string[] weapons;
-    string[] attire;
-    string[] accessories;
-    address payable creator;
-  }
-
-    ItemSet[] public itemSets;
+     ItemSet[] public itemSets;
+    ColorSet[] public colorSets;
     uint256 counter = 1;
     mapping (address => ItemSet) userToItems;
     mapping (address => uint256) public numItemsSets;
@@ -27,22 +18,69 @@ contract Master is ERC721Enumerable, ReentrancyGuard, Ownable {
     mapping (address => uint256) public userToMinted;
     mapping (address => uint256) public collectedFees;
 
+
+    constructor() ERC721("Loot", "LOOT") Ownable() {
+        ColorSet memory colorSet1;
+        colorSet1.color1 = "red";
+        colorSet1.color2 = "orange";
+        colorSet1.color3 = "yellow";
+        colorSets.push(colorSet1);
+
+        ColorSet memory colorSet2;
+        colorSet2.color1 = "green";
+        colorSet2.color2 = "teal";
+        colorSet2.color3 = "blue";
+        colorSets.push(colorSet2);
+
+        ColorSet memory colorSet3;
+        colorSet3.color1 = "purple";
+        colorSet3.color2 = "mediumslateblue";
+        colorSet3.color3 = "plum";
+        colorSets.push(colorSet3);
+
+        ColorSet memory colorSet4;
+        colorSet4.color1 = "deepskyblue";
+        colorSet4.color2 = "royalblue";
+        colorSet4.color3 = "midnightblue";
+        colorSets.push(colorSet4);
+    }
+
+    struct ItemSet {
+    string theme;
+    string[] weapons;
+    string[] attire;
+    string[] accessories;
+    ColorSet colorSet;
+    address payable creator;
+  }
+
+  struct ColorSet {
+      string color1;
+      string color2;
+      string color3;
+  }
+
+
     event feeCollected(address to, uint256 fee);
 
-    string[] private suffixes = ["Of Power", "Of Dark Matter", "Of The Sovereign", "Of The Future", "Of the Unknown", "Of Gravity", "Of the Singularity", "Of Distant Suns", "Of Next Augmented", "Of The Aeon", "Of Micro Fragmentation", "Of Vicarious Consciousness", "Of Vectors", "Of Metaphysical Augmentation", "Of The Astral Planes", "Of The Living Universe", "Of The Biomechs", "Of The Cyborgs", "Of The Spiritual Planes", "Of The Nano Threads", "Of The Sigil", "Of The Quick", "Of The Mind", "Of Psychic Fractals", "Of The Genetic Codex"];
+    string[] private suffixes = ["Of Power", "Of The Sovereign", "Of The Future", "Of the Unknown", "Of the Singularity", "Of The Aeon", "Of Fragmentation", "Of Consciousness", "Of Vectors", "Of Augmentation", "Of The Holy", "Of The Dead", "Of The Living", "Of The Spirit", "Of Flames", "Of The Sigil", "Of The Quick", "Of The Mind", "Of The Fractals", "Of The Mysterious", "Of The Cryptographic", "Of Death", "Of Vitality", "Of Hope", "Of Reasoning", "Of Hysteria"];
     
-    string[] private namePrefixes = ["Augmentation", "Cybernetic", "Cyber", "Nano", "Implanted", "Enhancement", "Modified", "Upgraded", "Advanced", "Hyper", "Advanced", "Proto", "Prototype", "Adaptation", "Artificial", "Gene", "Genetic", "Carbon", "Bio", "Biomechanical", "Mechanized", "Machine", "Cyborg", "Artificial", "Autonomous", "Electric", "Electronic", "Reflective", "Reflexive", "Self-Aware", "Sentient", "Self-Morphing", "Self-Modifying", "Self-Learning", "Organic", "Omni", "Omni-Processing", "Dystopian", "Reactive", "Responsive", "Optimized", "Indestructible", "Visionary", "Holographic", "Neon", "Superfluid", "Translucent", "Invisible", "Impenetrable", "Incorporeal", "Morphing", "Shapeshifter", "Active", "Living", "Mysterious", "Immortal", "Re-animated", "Toxic", "Corrosive", "Explosive", "Flammable", "Pyro", "Combustible", "Self-Destructive", "Parasitic", "Viral", "Psionic", "Psychic", "Arcane", "Divine", "Alchemical", "Totemic", "Sentinel", "Defensive", "Recon"];
+    string[] private namePrefixes = ["Augmentation", "Cybernetic", "Nano", "Sharp", "Enhancement", "Modified", "Upgraded", "Advanced", "Hyper", "Ensured", "Proto", "Prototype", "Adaptation", "Artificial", "Genetic", "Carbon", "Bio", "Biomechanical", "Mechanized", "Machine", "Cyborg", "Artificial", "Autonomous", "Electric", "Electronic", "Reflective", "Reflexive", "Self-Aware", "Sentient", "Self-Morphing", "Self-Modifying", "Self-Learning", "Organic", "Omni", "Omni-Processing", "Dystopian", "Reactive", "Responsive", "Optimized", "Indestructible", "Visionary", "Holographic", "Neon", "Superfluid", "Translucent", "Invisible", "Impenetrable", "Incorporeal", "Morphing", "Shapeshifter", "Active", "Living", "Mysterious", "Immortal", "Re-animated", "Toxic", "Corrosive", "Explosive", "Flammable", "Pyro", "Combustible", "Self-Destructive", "Parasitic", "Viral", "Psionic", "Psychic", "Arcane", "Divine", "Alchemical", "Totemic", "Sentinel", "Defensive", "Recon"];
     
-    string[] private nameSuffixes = ["Neon", "Stealthy", "Sentry", "Liberty", "Thunder", "Death", "Tool", "Junk", "Black", "Cyber", "Firewall", "Sharp", "Brawler", "Hacker", "Radiant", "Cipher", "Tracer", "Phantom", "Savage", "Persistent", "Serial", "Neural", "Deceit", "Lacquer", "Sapper", "Spark", "Spanner", "Scumbag", "Techno", "Cybernetics", "Shadow", "Transcendent", "Juggernaut", "Retro", "Metallic", "Chemical", "Spectral", "Digital", "Berserker", "Photon", "Anarchy", "Carbon", "Cyanide", "Hypnotic", "Decryptor", "Ghost", "Phoenix"];
+    string[] private nameSuffixes = ["Neon", "Stealthy", "Sentry", "Liberty", "Thunder", "Death", "Tool", "Junk", "Black", "Cyber", "Firewall", "Sharp", "Brawler", "Hacker", "Radiant", "Cipher", "Tracer", "Phantom", "Savage", "Persistent", "Serial", "Neural", "Deceit", "Lacquer", "Sapper", "Spark", "Spanner", "Scumbag", "Techno", "Cybernetics", "Shadow", "Transcendent", "Juggernaut", "Retro", "Metallic", "Chemical", "Spectral", "Digital", "Berserker", "Photon", "Anarchy", "Carbon", "Cyanide", "Hypnotic", "Decryptor", "Ghost", "Burly", "Agile"];
     
     function addItemSet(string memory _theme, string[] memory _weapons, string[] memory _attire, string[] memory _accessories) public payable {
         require(msg.value >= 50000000000000000, "Fee too low");
-        ItemSet memory newItem;
+        uint256 rand = random(string(abi.encodePacked(_theme)));
+        uint i = rand % colorSets.length;
+        ColorSet memory colors = colorSets[i];
 
+        ItemSet memory newItem;
         newItem.weapons = _weapons;
         newItem.attire = _attire;
         newItem.accessories = _accessories;
         newItem.theme = _theme;
+        newItem.colorSet = colors;
         newItem.creator = payable(msg.sender);
 
         numItemsSets[msg.sender] += 1;
@@ -90,26 +128,40 @@ contract Master is ERC721Enumerable, ReentrancyGuard, Ownable {
         string[] memory weapons = itemSets[i].weapons;
         string[] memory attire = itemSets[i].attire;
         string[] memory accessories = itemSets[i].accessories;
+        ColorSet memory colorSet = itemSets[i].colorSet;
 
-        string[8] memory parts;
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        string[14] memory parts;
 
-        parts[1] = getWeapon(tokenId, weapons);
+        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: url(#linear-gradient); font-family: Impact; font-size: 18px; fontWeight: bold; }</style><defs><linearGradient id="linear-gradient" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="';
+        parts[1] = colorSet.color1;
+    
+        parts[2] = '" offset="0%"/><stop stop-color="';
+        
+        parts[3] = colorSet.color2;
+        
+        parts[4] = '" offset="33%"/><stop stop-color="';
+        
+        parts[5] = colorSet.color3;
+        
+        parts[6] = '" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" fill="black" /><text x="10" y="30" class="base">';
+      
+        parts[7] = getWeapon(tokenId, weapons);
 
-        parts[2] = '</text><text x="10" y="40" class="base">';
+        parts[8] = '</text><text x="10" y="60" class="base">';
 
-        parts[3] = getAttire(tokenId, attire);
+        parts[9] = getAttire(tokenId, attire);
 
-        parts[4] = '</text><text x="10" y="60" class="base">';
+        parts[10] = '</text><text x="10" y="90" class="base">';
 
-        parts[5] = getAccessories(tokenId, accessories);
+        parts[11] = getAccessories(tokenId, accessories);
 
-        parts[6] = '</text><text x="10" y="80" class="base">';
+        parts[12] = '</text><text x="10" y="120" class="base">';
 
-        parts[7] = '</text></svg>';
+        parts[13] = '</text></svg>';
 
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]));
-        output = string(abi.encodePacked(output, parts[7]));
+        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
+        output = string(abi.encodePacked(output, parts[8], parts[9], parts[10], parts[11], parts[12], parts[13]));
+        
         
         string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "Bag #', toString(tokenId), '", "description": "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
         output = string(abi.encodePacked('data:application/json;base64,', json));
@@ -122,26 +174,39 @@ contract Master is ERC721Enumerable, ReentrancyGuard, Ownable {
         string[] memory weapons = itemSets[i].weapons;
         string[] memory attire = itemSets[i].attire;
         string[] memory accessories = itemSets[i].accessories;
-        string[8] memory parts;
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        ColorSet memory colorSet = itemSets[i].colorSet;
+        string[14] memory parts;
 
-        parts[1] = getWeapon(tokenId, weapons);
-
-        parts[2] = '</text><text x="10" y="40" class="base">';
-
-        parts[3] = getAttire(tokenId, attire);
-
-        parts[4] = '</text><text x="10" y="60" class="base">';
-
-        parts[5] = getAccessories(tokenId, accessories);
-
-        parts[6] = '</text><text x="10" y="80" class="base">';
-
-        parts[7] = '</text></svg>';
-
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]));
-        output = string(abi.encodePacked(output, parts[7]));
+        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: url(#linear-gradient); font-family: Impact; font-size: 18px; fontWeight: bold; }</style><defs><linearGradient id="linear-gradient" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="';
+        parts[1] = colorSet.color1;
+    
+        parts[2] = '" offset="0%"/><stop stop-color="';
         
+        parts[3] = colorSet.color2;
+        
+        parts[4] = '" offset="33%"/><stop stop-color="';
+        
+        parts[5] = colorSet.color3;
+        
+        parts[6] = '" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" fill="black" /><text x="10" y="30" class="base">';
+      
+        parts[7] = getWeapon(tokenId, weapons);
+
+        parts[8] = '</text><text x="10" y="60" class="base">';
+
+        parts[9] = getAttire(tokenId, attire);
+
+        parts[10] = '</text><text x="10" y="90" class="base">';
+
+        parts[11] = getAccessories(tokenId, accessories);
+
+        parts[12] = '</text><text x="10" y="120" class="base">';
+
+        parts[13] = '</text></svg>';
+
+        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
+        output = string(abi.encodePacked(output, parts[8], parts[9], parts[10], parts[11], parts[12], parts[13]));
+        output = Base64.encode(bytes(output));
         return output;
     }
 
@@ -151,16 +216,21 @@ contract Master is ERC721Enumerable, ReentrancyGuard, Ownable {
         uint256 rand = random(string(abi.encodePacked("GPT", toString(tokenId))));
         uint i = rand % itemSets.length;
         address payable creator = itemSets[i].creator;
-        creator.transfer(msg.value);
+        uint256 creatorFee = msg.value / 2;
+        creator.transfer(creatorFee);
         tokenIdToRand[tokenId] = i;
         userToMinted[creator] += 1;
-        uint256 creatorFee = msg.value / 2;
         collectedFees[creator] += creatorFee;
         creator.transfer(creatorFee);
         counter += 1;
         _safeMint(_msgSender(), tokenId);
         emit feeCollected(creator, creatorFee);
     }
+
+    function withdrawFees() public onlyOwner {
+
+      payable(msg.sender).transfer(address(this).balance);
+  }
     
 
     function toString(uint256 value) internal pure returns (string memory) {

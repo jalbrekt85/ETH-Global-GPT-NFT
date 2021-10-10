@@ -3,7 +3,6 @@ import {
   Flex,
   Icon,
   IconButton,
-  Link,
   useColorMode,
   useColorModeValue,
   Box,
@@ -16,6 +15,7 @@ import { FaSun } from "@react-icons/all-files/fa/FaSun";
 import { FaAddressCard } from "@react-icons/all-files/fa/FaAddressCard";
 import { FaNetworkWired } from "@react-icons/all-files/fa/FaNetworkWired";
 import { FaEthereum } from "@react-icons/all-files/fa/FaEthereum";
+import { AiFillGithub } from "@react-icons/all-files/ai/AiFillGithub";
 import { useUser } from "../context/UserContext";
 
 export default function App(props) {
@@ -74,7 +74,6 @@ export default function App(props) {
 
   return (
     <Box pos="relative" alignItems="right ">
-      {/* <chakra.div h="4.5rem" mx="auto" maxW="1200px"> */}
       <Flex w="full" h="full" px="16" align="center" justify="space-between">
         <Heading
           fontSize="4xl"
@@ -110,6 +109,19 @@ export default function App(props) {
           <IconButton
             size="md"
             fontSize="lg"
+            aria-label={"Github"}
+            variant="ghost"
+            color="current"
+            ml={{ base: "0", md: "3" }}
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href='https://github.com/jalbrekt85/ETH-Global-GPT-NFT';
+              }}
+            icon={<AiFillGithub />}
+          />
+          <IconButton
+            size="md"
+            fontSize="lg"
             aria-label={`Switch to ${text} mode`}
             variant="ghost"
             color="current"
@@ -136,7 +148,6 @@ export default function App(props) {
           />
         </Flex>
       </Flex>
-      {/* </chakra.div> */}
     </Box>
   );
 }

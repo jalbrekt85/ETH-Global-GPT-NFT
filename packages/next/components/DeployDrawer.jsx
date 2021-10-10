@@ -37,7 +37,6 @@ import { FaFileContract } from "@react-icons/all-files/fa/FaFileContract";
 
 const DeployDrawer = ({
   itemHistory,
-  deployedContract,
   setDeployedContract,
   setDeployedColor,
 }) => {

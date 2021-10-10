@@ -1,31 +1,27 @@
 import {
   Text,
-  Spinner,
   Button,
   Textarea,
   SkeletonText,
   useToast,
   Stack,
-  Box,
-  Flex,
   SimpleGrid,
+  Tooltip
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ethers } from "ethers";
 import { useUser } from "../context/UserContext";
 import Consumer from "../abis/contracts/Consumer.json";
-import Loot from "../abis/contracts/Loot.json";
-import { Container } from "./Container";
 import ItemTable from "./ItemTable";
 import DeployDrawer from "./DeployDrawer";
 import ExampleNFT from "./ExampleNFT";
 import random from "../utils/random";
 import colors from "../utils/colors";
+import { ImPriceTags } from "@react-icons/all-files/im/ImPriceTags";
 
 const CreateLoot = ({
   items,
   setItems,
-  deployedContract,
   setDeployedContract,
   setDeployedColor,
   itemHistory,
@@ -61,7 +57,6 @@ const CreateLoot = ({
     const weapons = await reqItems.weapons;
     const armor = await reqItems.armor;
     const accessories = await reqItems.accessories;
-    // setResult(res)
 
     const weaponsList = weapons.split(",");
     const armorList = armor.split(",");
@@ -102,7 +97,6 @@ const CreateLoot = ({
       user.provider.getSigner()
     );
     const fee = await contract.fee();
-    // console.log(ethers.utils.formatUnits(fee).toString());
 
     contract.on("Response", (Id) => {
       if (Id === requestId) {
@@ -130,27 +124,7 @@ const CreateLoot = ({
     setIsLoading(true);
   }
 
-  function ShowButton() {
-    return (
-      <Button
-        mt={4}
-        isLoading={isLoading}
-        onClick={requestPrompt}
-        borderRadius="md"
-        bgGradient={[
-          "linear(to-tr, teal.400, yellow.500)",
-          "linear(to-t, blue.300, teal.600)",
-          "linear(to-b, orange.200, purple.400)",
-        ]}
-        color="white"
-        px={4}
-        h={8}
-      >
-        Submit
-      </Button>
-    );
-  }
-
+  
   return (
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={20}>
       <Stack>
@@ -182,8 +156,9 @@ const CreateLoot = ({
           resize={resize}
           mt={4}
         />
-
+<Tooltip label="0.01 MATIC">
         <Button
+        leftIcon={<ImPriceTags />}
         mt={4}
         isLoading={isLoading}
         onClick={requestPrompt}
@@ -197,6 +172,7 @@ const CreateLoot = ({
       >
         Submit
       </Button>
+      </Tooltip>
 
         <SkeletonText
           isLoaded={!isLoading}
@@ -229,7 +205,6 @@ const CreateLoot = ({
         </Text>
         <DeployDrawer
           itemHistory={itemHistory}
-          deployedContract={deployedContract}
           setDeployedContract={setDeployedContract}
           setDeployedColor={setDeployedColor}
         />

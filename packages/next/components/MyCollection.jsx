@@ -13,20 +13,16 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  FormControl,
   HStack,
   Container,
   IconButton,
-  Stack
 } from "@chakra-ui/react";
 import { useUser } from "../context/UserContext";
 import useETHBalance from "../hooks/useETHBalance";
-import Loot from "../abis/contracts/Loot.json";
-import { ethers } from "ethers";
 import CollectionItem from "./CollectionItem"
 import { HiRefresh } from "@react-icons/all-files/hi/HiRefresh";
 
-const MyCollection = ({ ItemSet, deployedContract, setDeployedContract, deployedColor }) => {
+const MyCollection = ({ deployedContract, deployedColor }) => {
   const [tokensOwned, setTokensOwned] = useState(0);
   const [count, setCount] = useState(1)
   const [tokens, setTokens] = useState([])

@@ -2,25 +2,12 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Heading,
-  Link,
-  Image,
   Text,
-  Divider,
   HStack,
-  Tag,
-  Wrap,
-  WrapItem,
   Table,
-  useColorModeValue,
   Container,
-  Stack,
   Thead,
   Th,
-  List,
-  ListItem,
-  StackLabel,
-  TagCloseButton,
-  TagLabel,
   Badge,
   RadioGroup,
   Radio,
@@ -32,37 +19,24 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  StatHelpText,
-  StatArrow,
-  StatGroup
+  StatGroup,
+  Tooltip
 } from '@chakra-ui/react';
 import { useUser } from "../context/UserContext";
-import useETHBalance from "../hooks/useETHBalance";
-import Loot from "../abis/contracts/Loot.json";
 import { ethers } from "ethers";
 import CollectionItem from "./CollectionItem";
-import { BiRefresh } from "@react-icons/all-files/bi/BiRefresh";
 import Master from "../abis/contracts/Master.json";
 import { HiRefresh } from "@react-icons/all-files/hi/HiRefresh";
+import { ImPriceTags } from "@react-icons/all-files/im/ImPriceTags";
 
 const Marketplace = ({
-  ItemSet,
-  deployedContract,
-  setDeployedContract,
-  deployedColor,
   itemHistory,
-  setItemHistory,
-  setDeployedColor
 }) => {
-  const masterContractAddress = "0xC862E14Ee25aAf5D1A9F22ECA78E426712edfD7C"
+  const masterContractAddress = "0x68ce6E0694e5CF50db4e46b7D717584fafE4CDFE"
   const [tokensOwned, setTokensOwned] = useState(0);
-  const [count, setCount] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [selectedTheme, setSelectedTheme] = useState();
   const user = useUser();
-  const [userBalance] = useETHBalance(user);
-  const [val, setVal] = useState()
-  const [isLoading, setIsLoading] = useState()
   const [itemsAdded, setItemsAdded] = useState(0)
   const [collectedFees, setCollectedFees] = useState(0)
   const toast = useToast();
@@ -88,6 +62,23 @@ const Marketplace = ({
     setCollectedFees(fees.toString());
   }
 
+  async function getItemsAddded() {
+    let contract = new ethers.Contract(
+      masterContractAddress,
+      Master.abi,
+      user.provider.getSigner()
+    );
+    const itemsAdded = await contract.numItemsSets(user.address)
+    setItemsAdded(itemsAdded.toString())
+  }
+
+  async function refresh() {
+    getBal()
+    getTokens()
+    getFees()
+    getItemsAddded()
+  }
+ 
   function themeToItemSet(theme) {
     for (let i = 0; i <= itemHistory.length; i++) {
       if (itemHistory[i].theme === theme) {
@@ -107,13 +98,18 @@ const Marketplace = ({
       user.provider.getSigner()
     );
     const tx = await contract.addItemSet(selectedItemSet.theme, selectedItemSet.weapons, selectedItemSet.armor, selectedItemSet.accessories, {value: ethers.BigNumber.from("50000000000000000")})
+    toast({
+      title: "Adding Loot Set",
+      description: "Your transaction is pending",  
+      status: "info",
+      duration: 4000,
+      isClosable: true,
+    });
     await tx.wait()
     const itemsAdded = await contract.numItemsSets(user.address)
     setItemsAdded(itemsAdded.toString())
     
-    getBal()
-    getTokens()
-    getFees()
+    refresh()
   }
 
   async function claimLoot() {
@@ -140,14 +136,11 @@ const Marketplace = ({
     });
     await tx.wait();
 
-    getBal()
-    getTokens()
-    getFees()
+    refresh()
    
   }
 
   async function getTokens() {
-    
     let contract = new ethers.Contract(
       masterContractAddress,
       Master.abi,
@@ -159,12 +152,11 @@ const Marketplace = ({
     for (let i = 0; i < parseInt(bal.toString(), 10); i++) {
       const tokenID = await contract.tokenOfOwnerByIndex(user.address, i)
       const index = await contract.tokenIdToRand(tokenID)
-      console.log('index', index.toString())
       const currentItems = await contract.itemSets(index)
       const theme = currentItems.theme
-      console.log('theme', theme.toString())
       const tokenImage = await contract.tokenImage(tokenID)
-      console.log(tokenID.toString())
+      // const tokenURI = await contract.tokenURI(tokenID)
+      console.log('token', tokenImage.toString())
       currentTokens.push({image: tokenImage, id: tokenID.toString(), theme: theme.toString()})
     }
     setTokens(currentTokens)
@@ -199,6 +191,7 @@ const Marketplace = ({
       return (
     tokens.map((token) => (
       <CollectionItem image={token.image} theme={token.theme} color={"red"} tokenId={token.id}/>
+      
     )) 
     )}
     return <div></div>
@@ -246,7 +239,9 @@ const Marketplace = ({
            <ShowItems/>
 
 </HStack>
-<Button
+<Tooltip label="0.05 MATIC">
+      <Button
+        leftIcon={<ImPriceTags />}
         mt={4}
         borderRadius="md"
         bgGradient={[
@@ -262,6 +257,7 @@ const Marketplace = ({
       >
         Add To Global Contract
       </Button>
+      </Tooltip>
             </Table>
            
       </Box>
@@ -290,7 +286,9 @@ const Marketplace = ({
       </Box>
     </Box>
     <Center height="50px" />
+    <Tooltip label="0.05 MATIC">
     <Button
+    leftIcon={<ImPriceTags />}
           mt={4}
           onClick={claimLoot}
           borderRadius="md"
@@ -306,6 +304,7 @@ const Marketplace = ({
         >
           Claim Random Loot
         </Button>
+        </Tooltip>
         <Center height="50px" />
         <Heading 
           bgGradient={[
@@ -315,7 +314,7 @@ const Marketplace = ({
           ]}
           bgClip="text"
           fontWeight="bold">My Loot:</Heading>
-    <IconButton icon={<HiRefresh />} onClick={getTokens}/>
+    <IconButton icon={<HiRefresh />} onClick={refresh}/>
     <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }} alignContent="center">
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 5, lg: 8 }}>
 

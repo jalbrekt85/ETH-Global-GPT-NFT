@@ -1,11 +1,3 @@
-import { BigNumber, ethers } from "ethers";
-
-/**
- * Get the "gas" balance
- * Will show MATIC on Matic Chain, ETH on Ethereum
- * @param provider
- * @returns
- */
 const getETHBalance = async (
   provider
 ) => {

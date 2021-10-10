@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useUser, useLogin } from "../context/UserContext";
 import useETHBalance from "../hooks/useETHBalance";
 import useNetwork from "../hooks/useNetwork";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Box, Text, Heading } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from "@chakra-ui/react";
 
 
 const NewHome = () => {
@@ -89,7 +89,6 @@ const NewHome = () => {
               <CreateLoot
                 items={items}
                 setItems={setItems}
-                deployedContract={deployedContract}
                 setDeployedContract={setDeployedContract}
                 setDeployedColor={setDeployedColor}
                 itemHistory={itemHistory}
@@ -99,19 +98,11 @@ const NewHome = () => {
 
             <TabPanel>
               <MarketPlace
-                ItemSet={items}
-                deployedContract={deployedContract}
-                setDeployedContract={setDeployedContract}
-                deployedColor={deployedColor}
                 itemHistory={itemHistory}
-                setItemHistory={setItemHistory}
-                setDeployedColor={setDeployedColor}
               />
             </TabPanel>
             <TabPanel>
               <MyCollection
-                ItemSet={items}
-                deployedContract={deployedContract}
                 setDeployedContract={setDeployedContract}
                 deployedColor={deployedColor}
               />
