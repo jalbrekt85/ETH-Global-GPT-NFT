@@ -28,6 +28,8 @@ import CollectionItem from "./CollectionItem";
 import Master from "../abis/contracts/Master.json";
 import { HiRefresh } from "@react-icons/all-files/hi/HiRefresh";
 import { ImPriceTags } from "@react-icons/all-files/im/ImPriceTags";
+import random from "../utils/random";
+import colors from "../utils/colors";
 
 const Marketplace = ({
   itemHistory,
@@ -190,7 +192,7 @@ const Marketplace = ({
     if (tokens) {
       return (
     tokens.map((token) => (
-      <CollectionItem image={token.image} theme={token.theme} color={"red"} tokenId={token.id}/>
+      <CollectionItem image={token.image} theme={token.theme} color={random(colors)} tokenId={token.id}/>
       
     )) 
     )}
