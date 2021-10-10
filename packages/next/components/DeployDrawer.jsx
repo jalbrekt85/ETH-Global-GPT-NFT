@@ -95,7 +95,7 @@ const DeployDrawer = ({
     );
     setIsLoading(true);
     setDeployedContract(contract);
-    setDeployedColor("grey");
+    setDeployedColor("red");
   }
 
   async function deployLoot() {

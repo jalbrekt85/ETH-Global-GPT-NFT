@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Container } from "../components/Container";
 import Header from "../components/Header";
 import { ethers } from "ethers";
-import { useUser, useLogin } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 import useETHBalance from "../hooks/useETHBalance";
 import useNetwork from "../hooks/useNetwork";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from "@chakra-ui/react";
@@ -13,7 +13,6 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from "@chakra-ui/react"
 
 const NewHome = () => {
   const user = useUser();
-  const login = useLogin();
   const [userBalance] = useETHBalance(user);
   const [network] = useNetwork(user);
   const [deployedContract, setDeployedContract] = useState();
@@ -103,7 +102,7 @@ const NewHome = () => {
             </TabPanel>
             <TabPanel>
               <MyCollection
-                setDeployedContract={setDeployedContract}
+                deployedContract={deployedContract}
                 deployedColor={deployedColor}
               />
             </TabPanel>

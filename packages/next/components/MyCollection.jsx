@@ -37,6 +37,7 @@ const MyCollection = ({ deployedContract, deployedColor }) => {
   }
 
   async function getTokens() {
+    getBal()
     let currentTokens = []
     for (let i = 0; i < parseInt(tokensOwned, 10); i++) {
       const tokenID = await deployedContract.tokenOfOwnerByIndex(user.address, i)
@@ -87,9 +88,9 @@ const MyCollection = ({ deployedContract, deployedColor }) => {
        getTokens()
        getTheme()
     }
-  }, [deployedContract, userBalance, user]);
+  }, []);
 
-  
+  console.log(deployedContract)
  
   if (deployedContract) {
     return (
@@ -180,13 +181,13 @@ const MyCollection = ({ deployedContract, deployedColor }) => {
           fontWeight="bold">My Loot:</Heading>
            <IconButton icon={<HiRefresh />} onClick={getTokens}/>
         <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }} alignContent="center">
-        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 5, lg: 8 }}>
+        <SimpleGrid columns={{ base: 2, md: 2 }} spacing={{ base: 2, lg: 8 }}>
         <CollectionList/>
         </SimpleGrid>
         </Box>
       </Container>
     );
-  }
+  } else {
   return <div>
     <Text
           fontSize="lg"
@@ -200,6 +201,7 @@ const MyCollection = ({ deployedContract, deployedColor }) => {
           noOfLines={[4, 5, 6]}
         >Deploy/Load a Loot Contract and then come back</Text>
   </div>;
+  }
 };
 
 export default MyCollection;

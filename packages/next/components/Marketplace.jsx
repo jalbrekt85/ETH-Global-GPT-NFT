@@ -34,7 +34,7 @@ import colors from "../utils/colors";
 const Marketplace = ({
   itemHistory,
 }) => {
-  const masterContractAddress = "0x68ce6E0694e5CF50db4e46b7D717584fafE4CDFE"
+  const masterContractAddress = "0xA82B3db1c1a5591269070EfF28a9B0fb4Cc1007c"
   const [tokensOwned, setTokensOwned] = useState(0);
   const [tokens, setTokens] = useState([]);
   const [selectedTheme, setSelectedTheme] = useState();
