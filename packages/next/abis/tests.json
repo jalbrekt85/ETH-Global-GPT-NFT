@@ -1,0 +1,19 @@
+{
+  "contracts": {
+    "Consumer": "816025948f9dd2442c3d2b9884d1d799d70bba9a",
+    "smartcontractkit/chainlink-brownie-contracts@0.2.1/BufferChainlink": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "smartcontractkit/chainlink-brownie-contracts@0.2.1/CBORChainlink": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "smartcontractkit/chainlink-brownie-contracts@0.2.1/Chainlink": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "smartcontractkit/chainlink-brownie-contracts@0.2.1/ChainlinkClient": "750a107dfd09b0702b5ae03a4b6ea3c8b73190e1"
+  },
+  "tests": {
+    "tests/test_request.py": {
+      "coverage": false,
+      "isolated": false,
+      "results": "E",
+      "sha1": "d1d58c7d9c61db9780cf26ec1dd52894207ecf8c",
+      "txhash": []
+    }
+  },
+  "tx": {}
+}

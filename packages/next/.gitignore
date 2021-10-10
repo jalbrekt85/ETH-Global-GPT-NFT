@@ -34,5 +34,5 @@ yarn-error.log*
 .vercel
 
 # contracts
-abis/*
-!abis/.gitkeep 
+# abis/*
+# !abis/.gitkeep 
