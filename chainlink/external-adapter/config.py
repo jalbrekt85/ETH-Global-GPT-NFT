@@ -1,0 +1,2 @@
+# OPENAI API Key
+API_KEY='sk-'
